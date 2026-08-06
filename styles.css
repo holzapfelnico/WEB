@@ -1,0 +1,416 @@
+﻿/* Reset & base ------------------------------------------------------------ */
+* {
+  box-sizing: border-box;
+}
+:root {
+  font-family: "Times New Roman", Times, serif;
+  font-style: italic;
+  color: #000;
+}
+body {
+  margin: 0;
+  font-family: inherit;
+  background: #000;
+  color: #fff;
+}
+nav, button, a, h1, p {
+  font-family: inherit;
+}
+
+/* Navigation --------------------------------------------------------------- */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 200;
+}
+.primary-nav {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 0;
+  width: 100%;
+  height: auto;
+  padding: 1rem;
+  z-index: 100;
+}
+.nav-right {
+  margin-left: auto;
+  display: flex;
+  gap: 1.5rem;
+}
+@media (min-width: 1024px) {
+  .primary-nav {
+    gap: 2.5rem;
+    padding: 2rem 4rem;
+    height: 110px;
+  }
+  .nav-right {
+    gap: 2.5rem;
+  }
+}
+.nav-button {
+  font-size: 3vw;
+  letter-spacing: 0.08em;
+  background: transparent;
+  border: none;
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+  font-weight: 1000;
+}
+@media (min-width: 1024px) {
+  .nav-button {
+    font-size: 1.5rem;
+  }
+}
+.nav-button:hover {
+  color: #999;
+}
+
+/* Hero grid (homepage) — featured hero images stacked in a column; a few
+   are pulled out as overlays positioned beside another tile ---------------- */
+.hero-grid {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+  width: 100%;
+  padding: 3rem;
+}
+.hero-tile {
+  position: relative;
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.hero-tile img,
+.hero-tile video {
+  display: block;
+  width: 100%;
+  height: auto;
+  -webkit-user-drag: none;
+}
+.hero-marquee {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  padding: 0.4rem 0;
+  white-space: nowrap;
+}
+.hero-marquee-track {
+  display: inline-flex;
+  width: max-content;
+  animation: hero-marquee-scroll 16s linear infinite;
+}
+.hero-marquee-track span {
+  display: inline-block;
+  white-space: nowrap;
+  font-weight: 1000;
+  font-size: 1.4rem;
+  letter-spacing: 0.05em;
+  color: #000;
+}
+@keyframes hero-marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.hero-tile.hero-tile--hidden {
+  display: none;
+}
+
+/* Project gallery — revealed in place of the hero grid when a hero image
+   is clicked; every media item for that project, stacked full width ------- */
+.project-gallery {
+  display: none;
+  flex-direction: column;
+  width: 100%;
+  padding: 3rem;
+  gap: 3rem;
+}
+.project-gallery.project-gallery--active {
+  display: flex;
+}
+.project-gallery-heading {
+  margin: 0;
+  font-size: clamp(1.5rem, 4vw, 3rem);
+  font-weight: 1000;
+  letter-spacing: -0.01em;
+}
+.project-gallery-heading .code {
+  text-decoration: underline;
+  text-underline-offset: 0.12em;
+  text-decoration-thickness: 0.08em;
+}
+.project-gallery img,
+.project-gallery video {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* Back button — fixed to the bottom of the page, only shown once a
+   project's gallery is open ------------------------------------------------ */
+.back-button {
+  position: fixed;
+  left: 50%;
+  bottom: 1.75rem;
+  transform: translateX(-50%);
+  z-index: 150;
+  background: #fff;
+  color: #000;
+  border: none;
+  padding: 0.6em 1.4em;
+  font-family: inherit;
+  font-weight: 1000;
+  font-size: 1rem;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+}
+.back-button:hover {
+  background: #ccc;
+}
+
+/* Info box — draggable card of project info shown beside the isolated hero
+   image; the handle drags the whole box, the body scrolls independently -- */
+.info-box {
+  position: absolute;
+  z-index: 50;
+  width: 360px;
+  max-width: 88vw;
+  max-height: 70vh;
+  display: flex;
+  flex-direction: column;
+  background: #ececec;
+  color: #000;
+  box-shadow: 0 16px 50px rgba(0, 0, 0, 0.55);
+}
+.info-box[hidden] {
+  display: none;
+}
+.info-box-handle {
+  flex: none;
+  padding: 0.9rem 1.25rem;
+  font-weight: 1000;
+  font-size: 1.15rem;
+  letter-spacing: -0.01em;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+}
+.info-box-handle.info-box-handle--dragging {
+  cursor: grabbing;
+}
+.info-box-content {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 1.25rem;
+  font-weight: 700;
+  line-height: 1.5;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* legacy Edge */
+}
+.info-box-content::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+.info-box-scrollbar {
+  position: absolute;
+  right: -13px; /* centers the dot on the box's right border */
+  width: 26px;
+  pointer-events: none;
+}
+.info-box-scrollbar[hidden] {
+  display: none;
+}
+.info-box-scrollbar-dot {
+  position: absolute;
+  left: 0;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #000;
+}
+.info-box-content p {
+  margin: 0 0 1rem;
+}
+.info-box-content p:last-child {
+  margin-bottom: 0;
+}
+.info-box-meta {
+  opacity: 0.7;
+}
+.info-box-content hr {
+  border: none;
+  border-top: 1px solid rgba(0, 0, 0, 0.2);
+  margin: 1rem 0;
+}
+.info-box-empty {
+  opacity: 0.5;
+  font-style: italic;
+}
+.back-button[hidden] {
+  display: none;
+}
+
+/* Project media tiles — spawned one at a time in project mode, dragged into
+   place by hand rather than auto-laid-out ----------------------------------- */
+.project-media-tile {
+  position: absolute;
+  z-index: 55;
+  width: 340px;
+  max-width: 80vw;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.project-media-tile.info-box-handle--dragging {
+  cursor: grabbing;
+}
+.project-media-tile img,
+.project-media-tile video {
+  display: block;
+  width: 100%;
+  height: auto;
+  pointer-events: none;
+  -webkit-user-drag: none;
+}
+.project-media-tile img.tile-inverted {
+  filter: invert(1);
+}
+.project-media-tile--interactive video {
+  pointer-events: auto;
+}
+.project-media-tile-resize {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 18px;
+  height: 18px;
+  background: #fff;
+  border: 2px solid #000;
+  cursor: nwse-resize;
+  touch-action: none;
+  z-index: 2;
+}
+
+/* Save layout button — copies the current spawned-image positions/sizes to
+   the clipboard as a PROJECT_MEDIA_LAYOUT block, only shown in project mode */
+.save-layout-button {
+  position: fixed;
+  right: 1.75rem;
+  bottom: 1.75rem;
+  z-index: 150;
+  background: #fff;
+  color: #000;
+  border: none;
+  padding: 0.6em 1.4em;
+  font-family: inherit;
+  font-weight: 1000;
+  font-size: 1rem;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+}
+.save-layout-button:hover {
+  background: #ccc;
+}
+.save-layout-button[hidden] {
+  display: none;
+}
+
+/* Mobile (narrow/vertical) layout ------------------------------------------
+   Desktop relies on absolute pixel positioning (hero overlays, the project
+   media collages, the draggable info box) baked for wide viewports. Below
+   this width, all of that collapses into a single stacked column instead —
+   same visual language (dark background, italic serif, marquee titles),
+   just reflowed. Nothing above this block is touched. */
+@media (max-width: 768px) {
+  .hero-grid {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    padding: 1.25rem;
+    gap: 1.75rem;
+  }
+  .hero-tile {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    width: 100% !important;
+    flex: 1 1 100% !important;
+    margin-left: 0 !important;
+  }
+  .hero-marquee-track span {
+    font-size: 1rem;
+  }
+
+  /* Every hero stays in its original order (no CSS `order` reshuffling) —
+     just varied width + alternating left/right inset so the stack doesn't
+     read as a rigid, uniform, full-viewport-width column. */
+  .hero-tile[data-code="0011"] {
+    flex: 0 1 92% !important;
+    width: 92% !important;
+  }
+  .hero-tile.hero-tile--portrait[data-code="0006"] {
+    flex: 0 1 74% !important;
+    width: 74% !important;
+  }
+  .hero-tile[data-code="0008"] {
+    flex: 0 1 92% !important;
+    width: 92% !important;
+    margin-left: auto !important;
+    margin-top: 1.5rem;
+  }
+  .hero-tile[data-code="0004"] {
+    flex: 0 1 65% !important;
+    width: 65% !important;
+    margin-left: auto !important;
+  }
+  .hero-tile.hero-tile--portrait[data-code="0010"] {
+    flex: 0 1 68% !important;
+    width: 68% !important;
+    margin-left: 0 !important;
+    margin-top: 1.5rem;
+  }
+  .hero-tile[data-code="0005"] {
+    flex: 0 1 90% !important;
+    width: 90% !important;
+    margin-left: auto !important;
+    margin-top: 1.5rem;
+  }
+
+  .info-box,
+  .project-media-tile {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 0 1.5rem !important;
+  }
+  .info-box {
+    max-width: 92vw !important;
+    margin: 0 auto 1.5rem !important;
+  }
+  .project-media-tile-resize {
+    display: none !important;
+  }
+  .project-media-tile {
+    cursor: default;
+  }
+
+  .back-button,
+  .save-layout-button {
+    padding: 0.5em 1em;
+    font-size: 0.85rem;
+  }
+}
