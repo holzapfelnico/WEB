@@ -410,8 +410,11 @@ body.info-open {
     flex: 1 1 calc(100% - 1.75rem) !important;
     margin-left: 0 !important;
   }
+  .hero-marquee {
+    padding: 0.09rem 0;
+  }
   .hero-marquee-track span {
-    font-size: 0.08rem;
+    font-size: 0.3rem;
   }
   .hero-tile-code {
     font-size: 0.65rem;
