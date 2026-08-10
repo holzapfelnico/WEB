@@ -638,6 +638,12 @@ function initHeroGrid() {
     const mediaEl = createHeroMediaEl(project.hero);
     mediaEl.draggable = false;
     tile.appendChild(mediaEl);
+    if (mediaEl.tagName === "VIDEO") {
+      // Mobile browsers sometimes ignore the `autoplay` attribute on
+      // elements built dynamically in JS — kicking playback explicitly
+      // once it's in the DOM makes it reliable there too.
+      mediaEl.play().catch(() => {});
+    }
     mediaLoaded.push(waitForMedia(mediaEl));
     markHeroOrientation(mediaEl, tile);
 
