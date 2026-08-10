@@ -16,6 +16,7 @@
 const projects = [
   {
     code: "0001",
+    disabled: true,
     title: "",
     year: "",
     location: "",
@@ -32,6 +33,7 @@ const projects = [
   },
   {
     code: "0002",
+    disabled: true,
     title: "",
     year: "",
     location: "",
@@ -79,6 +81,7 @@ const projects = [
     code: "0004",
     title: "0004_STACKED // MAGAZINE STANDS",
     year: "",
+    date: "01-2024",
     location: "",
     type: "",
     collaborators: [],
@@ -99,6 +102,7 @@ const projects = [
     code: "0005",
     title: "0005_RAVAGES OF TIME // POPUP THEATRE ONTOP OF A RUIN",
     year: "",
+    date: "06-2023",
     location: "",
     type: "",
     collaborators: [],
@@ -124,6 +128,7 @@ const projects = [
     code: "0006",
     title: "0006_A HOUSE IN MOTION // TRANSFORMING A 1960s CHURCH INTO A ACROBATS HOUSING",
     year: "2024",
+    date: "02-2024",
     location: "Munich",
     type: "",
     collaborators: ["Lotte Becher"],
@@ -177,6 +182,7 @@ const projects = [
     code: "0008",
     title: "0008_CONVIVIUM // SOLAWI_UNLEARNING CONVENIENCE",
     year: "2025",
+    date: "07-2025",
     location: "Egenhofen",
     type: "",
     collaborators: ["Lotte Becher", "Clara Rimkeit"],
@@ -190,6 +196,7 @@ const projects = [
     code: "0009",
     title: "0009_PALIMPSEST // RESEARCH_RESOURCE_RESET_REUSE // TRANSFORMATION OF A COURTHOUSE",
     year: "2025",
+    date: "02-2026",
     location: "Munich",
     type: "",
     collaborators: ["Jonathan Hanssen"],
@@ -224,6 +231,7 @@ const projects = [
     code: "0010",
     title: "0010_1860 MUNICH E.V._A NEW GYMNASIUM IN TIMBER",
     year: "",
+    date: "02-2026",
     location: "",
     type: "",
     collaborators: [],
@@ -252,6 +260,7 @@ const projects = [
     code: "0011",
     title: "0011_RADIATOR // RETHINKING FRITZ-PFLAUM HUT",
     year: "2026",
+    date: "07-2026",
     location: "Tirol",
     type: "",
     collaborators: ["Laura Schieferdecker", "Jonas Wald"],
@@ -268,7 +277,7 @@ const projects = [
       { type: "image", src: "projects/0011/0011_07_ergebnis.webp", alt: "Project 0011 image 7" },
       { type: "image", src: "projects/0011/0011_08_ergebnis.webp", alt: "Project 0011 image 8" },
       { type: "image", src: "projects/0011/0011_09_ergebnis.webp", alt: "Project 0011 image 9" },
-      { type: "image", src: "projects/0011/0011_10_ergebnis.webp", alt: "Project 0011 image 10" },
+      { type: "image", src: "projects/0011/0011_10.gif", alt: "Project 0011 image 10" },
       { type: "image", src: "projects/0011/0011_11_ergebnis.webp", alt: "Project 0011 image 11" },
       { type: "image", src: "projects/0011/0011_12_ergebnis.webp", alt: "Project 0011 image 12" },
       { type: "image", src: "projects/0011/0011_13_ergebnis.webp", alt: "Project 0011 image 13" },
@@ -284,7 +293,39 @@ const projects = [
       { type: "image", src: "projects/0011/0011_23_ergebnis.webp", alt: "Project 0011 image 23" },
     ],
   },
+  {
+    code: "0012",
+    title: "0012_ST. PETER_REFURBISHMENT OF A RURAL HOUSE IN THE BLACK FOREST",
+    year: "",
+    date: "(ongoing)",
+    location: "",
+    type: "",
+    collaborators: [],
+    text: "Ongoing",
+    hero: { type: "image", src: "hero_img/hero_0012_ergebnis.webp", alt: "Project 0012" },
+    media: [{ type: "image", src: "projects/0012/2.jpg", alt: "Project 0012 image 1" }],
+  },
 ];
+
+// ---------------------------------------------------------------------------
+// Info overlay content — shown from the nav's INFO link. `text` is the bio
+// copy (split into paragraphs like a project's `text`); `cv` is a list of
+// { company, city, year } entries, most recent first.
+// ---------------------------------------------------------------------------
+
+const SITE_INFO = {
+  text: "Hey, I'm Nicolas & welcome to my portfolio :-)\nTake your time to look around. Always open for interesting inputs, collabs or projects. Feel free to get in touch!",
+  cv: [
+    { company: "david chipperfield architects", city: "london", year: "2024" },
+    { company: "blackspace", city: "munich", year: "2023" },
+    { company: "oitoo", city: "porto", year: "2022" },
+    { company: "auer weber", city: "munich", year: "2021" },
+    { company: "studio ga", city: "munich", year: "2019" },
+    { company: "kaan-architekten", city: "munich", year: "2018" },
+    { company: "cl-map", city: "munich", year: "2017" },
+    { company: "zwingl/dilg", city: "munich", year: "2015" },
+  ],
+};
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -294,6 +335,7 @@ function encodePath(path) {
   return path.split("/").map(encodeURIComponent).join("/");
 }
 
+// Small autoplay/muted/looping tile used on the homepage grid.
 function createHeroMediaEl(hero) {
   if (hero.type === "video") {
     const video = document.createElement("video");
@@ -312,25 +354,33 @@ function createHeroMediaEl(hero) {
   return img;
 }
 
-// Same source as the hero grid's autoplay/muted video, but with visible
-// controls and sound on so it can actually be played with audio.
-function createSoundVideoEl(hero) {
-  const video = document.createElement("video");
-  video.src = encodePath(hero.src);
-  video.controls = true;
-  video.playsInline = true;
-  video.setAttribute("aria-label", hero.alt || "");
-  return video;
+// Full-size element for a lightbox slide — videos get visible controls
+// (and sound) since this is the main viewing experience, not a background loop.
+function createSlideMediaEl(item) {
+  if (item.type === "video") {
+    const video = document.createElement("video");
+    video.src = encodePath(item.src);
+    video.controls = true;
+    video.playsInline = true;
+    if (item.poster) video.poster = encodePath(item.poster);
+    video.setAttribute("aria-label", item.alt || "");
+    return video;
+  }
+  const img = document.createElement("img");
+  img.src = encodePath(item.src);
+  img.alt = item.alt || "";
+  applyInversion(img, item);
+  return img;
 }
 
-// Whether a spawned image gets inverted: an explicit `invert: true/false` on
+// Whether a slide image gets inverted: an explicit `invert: true/false` on
 // the media item (in the `projects` array, next to its `src`) always wins;
-// otherwise it falls back to automatic near-white detection below.
-function applyInversion(img, mediaItem) {
-  if (img.tagName !== "IMG") return;
-  if (mediaItem.invert === false) return;
-  if (mediaItem.invert === true) {
-    img.classList.add("tile-inverted");
+// otherwise it falls back to automatic near-white detection below — keeps
+// mostly-white images from washing out against the lightbox's black backdrop.
+function applyInversion(img, item) {
+  if (item.invert === false) return;
+  if (item.invert === true) {
+    img.classList.add("slide-inverted");
     return;
   }
   invertIfMostlyWhite(img);
@@ -341,8 +391,6 @@ function applyInversion(img, mediaItem) {
 const WHITE_INVERT_THRESHOLD = 210; // 0-255, higher = only near-white qualifies
 
 function invertIfMostlyWhite(img) {
-  if (img.tagName !== "IMG") return;
-
   function analyze() {
     try {
       const size = 32;
@@ -359,7 +407,7 @@ function invertIfMostlyWhite(img) {
       }
       const avgBrightness = total / (data.length / 4);
 
-      if (avgBrightness > WHITE_INVERT_THRESHOLD) img.classList.add("tile-inverted");
+      if (avgBrightness > WHITE_INVERT_THRESHOLD) img.classList.add("slide-inverted");
     } catch (err) {
       // Canvas can throw if the image ever loads cross-origin; skip silently.
     }
@@ -369,11 +417,56 @@ function invertIfMostlyWhite(img) {
   else img.addEventListener("load", analyze);
 }
 
+// The last slide in every project's rotation — same info previously shown
+// in the draggable info card, now just another stop in the sequence.
+function buildInfoSlide(project) {
+  const wrap = document.createElement("div");
+  wrap.className = "lightbox-info";
+
+  const heading = document.createElement("h2");
+  heading.className = "lightbox-info-title";
+  heading.textContent = project.title || project.code;
+  wrap.appendChild(heading);
+
+  const metaParts = [project.year, project.location, project.type].filter(Boolean);
+  if (metaParts.length) {
+    const meta = document.createElement("p");
+    meta.className = "lightbox-info-meta";
+    meta.textContent = metaParts.join(" — ");
+    wrap.appendChild(meta);
+  }
+
+  if (project.text) {
+    project.text
+      .split(/\n+/)
+      .filter(Boolean)
+      .forEach((para) => {
+        const p = document.createElement("p");
+        p.textContent = para;
+        wrap.appendChild(p);
+      });
+  } else {
+    const empty = document.createElement("p");
+    empty.className = "lightbox-info-empty";
+    empty.textContent = "Project text coming soon.";
+    wrap.appendChild(empty);
+  }
+
+  if (project.collaborators && project.collaborators.length) {
+    wrap.appendChild(document.createElement("hr"));
+    const collab = document.createElement("p");
+    collab.textContent = `In collaboration with: ${project.collaborators.join(", ")}`;
+    wrap.appendChild(collab);
+  }
+
+  return wrap;
+}
+
 // ---------------------------------------------------------------------------
 // Homepage: static grid of all featured hero images
 // ---------------------------------------------------------------------------
 
-const FEATURED = ["0009", "0011", "0006", "0008", "0004", "0010", "0005"];
+const FEATURED = ["0009", "0011", "0006", "0008", "0004", "0012", "0010", "0005"];
 const MARQUEE_SPEED = 90; // pixels per second — same for every marquee, regardless of text length
 
 // Fixed width + horizontal center (both % of page width) per project —
@@ -386,159 +479,10 @@ const HERO_LAYOUT = {
   "0006": { width: 20, overlay: true, alignWith: "0011", topOffset: 120, gapLeftOf: "0011" },
   "0008": { width: 30, overlay: true, topGapBelow: "0011", alignRightWith: "0011" },
   "0004": { width: 22, overlay: true, topGapBelow: "0006", gapLeftOf: "0008", topAdjust: 70 },
-  "0010": { width: 20, overlay: true, topGapBelow: "0008", gapRightOf: "0004" },
-  "0005": { width: 30, overlay: true, topGapBelow: "0004", gapLeftOf: "0010" },
+  "0012": { width: 20, overlay: true, topGapBelow: "0008", gapRightOf: "0004" },
+  "0005": { width: 30, overlay: true, topGapBelow: "0012", gapRightOf: "0004" },
+  "0010": { width: 20, overlay: true, belowOf: "0004" },
 };
-
-// Absolute positions (px, relative to the #hero-grid stage's top-left
-// corner) for each project's media images once its hero is clicked. Key by
-// project code, then by the image's index in that project's `media` array
-// (0-based). Only add entries for images you want to move — anything left
-// out falls back to the auto grid below (MEDIA_GRID_* constants), so you
-// can adjust one image at a time:
-//   PROJECT_MEDIA_LAYOUT["0009"][3] = { left: 900, top: 1200, width: 420 };
-// `width` is optional per entry (defaults to MEDIA_TILE_WIDTH).
-const PROJECT_MEDIA_LAYOUT = {
-  "0009": {
-    0: { left: 247, top: 566, width: 769 },
-    1: { left: 1179, top: 251, width: 476 },
-    2: { left: 617, top: 279, width: 1090 },
-    3: { left: 448, top: -15, width: 429 },
-    4: { left: 800, top: -6, width: 920 },
-    5: { left: 156, top: 520, width: 872 },
-    6: { left: 1022, top: 249, width: 527 },
-    7: { left: 1064, top: 252, width: 482 },
-    8: { left: 7, top: 80, width: 688 },
-    9: { left: 597, top: -3, width: 445 },
-    10: { left: 1046, top: 248, width: 497 },
-    11: { left: 28, top: 125, width: 569 },
-    12: { left: 579, top: -7, width: 461 },
-    13: { left: 1043, top: 253, width: 501 },
-    14: { left: 24, top: 164, width: 546 },
-    15: { left: 577, top: -1, width: 466 },
-    16: { left: 1043, top: 425, width: 1168 },
-    17: { left: 217, top: -43, width: 1297 },
-    18: { left: 1184, top: 38, width: 496 },
-    19: { left: 136, top: 168, width: 830 },
-    20: { left: 1546, top: 193, width: 569 },
-    21: { left: 666, top: 148, width: 629 },
-  },
-  "0011": {
-    0: { left: 403, top: 44, width: 577 },
-    1: { left: 641, top: 284, width: 496 },
-    2: { left: 1222, top: 288, width: 527 },
-    3: { left: 643, top: 286, width: 496 },
-    4: { left: 1223, top: 290, width: 519 },
-    5: { left: 645, top: 286, width: 495 },
-    6: { left: 1228, top: 290, width: 517 },
-    7: { left: 640, top: 239, width: 1113 },
-    8: { left: 1019, top: 44, width: 1005 },
-    9: { left: 769, top: 341, width: 878 },
-    10: { left: 562, top: 209, width: 548 },
-    11: { left: 1334, top: 211, width: 555 },
-    12: { left: 530, top: 209, width: 589 },
-    13: { left: 1172, top: 323, width: 879 },
-    14: { left: 527, top: 176, width: 596 },
-    15: { left: 1328, top: 207, width: 599 },
-    16: { left: 524, top: 173, width: 599 },
-    17: { left: 1170, top: 327, width: 880 },
-    18: { left: 523, top: 169, width: 600 },
-    19: { left: 1183, top: 345, width: 851 },
-    20: { left: 250, top: 151, width: 1031 },
-    21: { left: 1328, top: 182, width: 615 },
-    22: { left: 1327, top: 177, width: 617 },
-    23: { left: 1325, top: 177, width: 619 },
-  },
-  "0006": {
-    0: { left: 866, top: 1011, width: 475 },
-    1: { left: 853, top: 1004, width: 1392 },
-    2: { left: 579, top: 844, width: 520 },
-    3: { left: 1573, top: 1034, width: 612 },
-    4: { left: 728, top: 941, width: 1161 },
-    5: { left: 729, top: 942, width: 1157 },
-    6: { left: 462, top: 744, width: 524 },
-    7: { left: 1567, top: 977, width: 655 },
-    8: { left: 873, top: 791, width: 609 },
-    9: { left: 1564, top: 882, width: 659 },
-    10: { left: 443, top: 761, width: 688 },
-    11: { left: 872, top: 728, width: 618 },
-    12: { left: 1557, top: 879, width: 666 },
-    13: { left: 872, top: 773, width: 620 },
-    14: { left: 512, top: 1115, width: 593 },
-    15: { left: 1160, top: 818, width: 591 },
-    16: { left: 1831, top: 1146, width: 639 },
-  },
-  "0008": {
-    0: { left: 360, top: 1294, width: 1647 },
-    1: { left: 380, top: 0, width: 340 },
-  },
-  "0004": {
-    0: { left: 75, top: 1911, width: 527 },
-    1: { left: 971, top: 1685, width: 407 },
-    2: { left: 1265, top: 1828, width: 492 },
-    3: { left: 1601, top: 1579, width: 461 },
-    4: { left: 632, top: 1551, width: 828 },
-    5: { left: 158, top: 1716, width: 542 },
-    6: { left: 813, top: 1576, width: 533 },
-    7: { left: 1455, top: 1869, width: 495 },
-  },
-  "0010": {
-    0: { left: 126, top: 1892, width: 1169 },
-    1: { left: 672, top: 2059, width: 1107 },
-    2: { left: 720, top: 1769, width: 1039 },
-    3: { left: 388, top: 2000, width: 513 },
-    4: { left: 980, top: 2092, width: 510 },
-    5: { left: 1262, top: 1852, width: 449 },
-    6: { left: 655, top: 1916, width: 572 },
-    7: { left: 122, top: 1847, width: 1112 },
-    8: { left: 1063, top: 1806, width: 715 },
-    9: { left: 386, top: 2054, width: 517 },
-    10: { left: 1053, top: 1754, width: 669 },
-    11: { left: 1092, top: 2264, width: 937 },
-    12: { left: 1211, top: 1866, width: 432 },
-    13: { left: 288, top: 1881, width: 659 },
-    14: { left: 913, top: 1759, width: 828 },
-    15: { left: 292, top: 2012, width: 584 },
-  },
-  "0005": {
-    0: { left: 274, top: 2424, width: 421 },
-    1: { left: 962, top: 2536, width: 660 },
-    2: { left: 1423, top: 2350, width: 708 },
-    3: { left: 252, top: 2119, width: 954 },
-    4: { left: 243, top: 2637, width: 500 },
-    5: { left: 924, top: 2513, width: 720 },
-    6: { left: 71, top: 2260, width: 740 },
-    7: { left: 809, top: 2257, width: 855 },
-    8: { left: 1634, top: 2321, width: 737 },
-    9: { left: 195, top: 2214, width: 735 },
-    10: { left: 954, top: 2235, width: 654 },
-    11: { left: 1681, top: 2306, width: 695 },
-    12: { left: 808, top: 2422, width: 456 },
-  },
-};
-
-const MEDIA_TILE_WIDTH = 340; // default width in px, matches .project-media-tile
-const MEDIA_GRID_COLUMNS = 3;
-const MEDIA_GRID_GAP = 40;
-const MEDIA_GRID_ROW_HEIGHT = 260; // rough row spacing for the auto grid only
-
-function getMediaPosition(code, index) {
-  const override = (PROJECT_MEDIA_LAYOUT[code] || {})[index];
-
-  // Anything without an explicit override spawns near the top of the page
-  // (not below the hero) so it's immediately visible for positioning,
-  // instead of needing a scroll to go find it.
-  const col = index % MEDIA_GRID_COLUMNS;
-  const row = Math.floor(index / MEDIA_GRID_COLUMNS);
-  const baseLeft = col * (MEDIA_TILE_WIDTH + MEDIA_GRID_GAP);
-  const baseTop = row * (MEDIA_GRID_ROW_HEIGHT + MEDIA_GRID_GAP);
-
-  return {
-    left: override && override.left !== undefined ? override.left : baseLeft,
-    top: override && override.top !== undefined ? override.top : baseTop,
-    width: override && override.width !== undefined ? override.width : MEDIA_TILE_WIDTH,
-  };
-}
 
 function waitForMedia(el) {
   return new Promise((resolve) => {
@@ -577,435 +521,92 @@ function markHeroOrientation(el, tile) {
   }
 }
 
-// Builds the draggable project info card once. The handle drags the whole
-// box (pointer events scoped to it only); the content area scrolls on its
-// own via `overflow-y: auto`, so the two never fight over pointer input.
-function createInfoBox(onMove) {
-  const el = document.createElement("div");
-  el.className = "info-box";
-  el.hidden = true;
-
-  const handle = document.createElement("div");
-  handle.className = "info-box-handle";
-
-  const content = document.createElement("div");
-  content.className = "info-box-content";
-
-  // Native scrollbar is hidden via CSS; this dot tracks scroll progress
-  // along the content area instead.
-  const scrollTrack = document.createElement("div");
-  scrollTrack.className = "info-box-scrollbar";
-  scrollTrack.hidden = true;
-  const scrollDot = document.createElement("div");
-  scrollDot.className = "info-box-scrollbar-dot";
-  scrollTrack.appendChild(scrollDot);
-
-  el.appendChild(handle);
-  el.appendChild(content);
-  el.appendChild(scrollTrack);
-  makeDraggable(el, handle, onMove);
-
-  function updateScrollIndicator() {
-    const scrollable = content.scrollHeight > content.clientHeight + 1;
-    scrollTrack.hidden = !scrollable;
-    if (!scrollable) return;
-
-    scrollTrack.style.top = content.offsetTop + "px";
-    scrollTrack.style.height = content.offsetHeight + "px";
-
-    const maxDotTravel = content.offsetHeight - scrollDot.offsetHeight;
-    const progress = content.scrollTop / (content.scrollHeight - content.clientHeight);
-    scrollDot.style.top = progress * maxDotTravel + "px";
-  }
-
-  content.addEventListener("scroll", updateScrollIndicator);
-
-  function setContent(project) {
-    handle.textContent = project.title || project.code;
-
-    const metaParts = [project.year, project.location, project.type].filter(Boolean);
-    const bodyParts = [];
-
-    if (metaParts.length) {
-      bodyParts.push(`<p class="info-box-meta">${metaParts.join(" — ")}</p>`);
-    }
-
-    if (project.text) {
-      bodyParts.push(
-        project.text
-          .split(/\n+/)
-          .filter(Boolean)
-          .map((para) => `<p>${para}</p>`)
-          .join("")
-      );
-    } else {
-      bodyParts.push(`<p class="info-box-empty">Project text coming soon.</p>`);
-    }
-
-    if (project.collaborators && project.collaborators.length) {
-      bodyParts.push("<hr>");
-      bodyParts.push(`<p>In collaboration with: ${project.collaborators.join(", ")}</p>`);
-    }
-
-    content.innerHTML = bodyParts.join("");
-    content.scrollTop = 0;
-    // Layout needs a tick to settle before content's height is measurable.
-    requestAnimationFrame(updateScrollIndicator);
-  }
-
-  return { el, setContent };
-}
-
-// Per-project preferred side for the info box ("left" or "right" of the
-// hero tile). Anything not listed here defaults to "right".
-const INFO_BOX_SIDE = {
-  "0006": "left",
-  "0004": "left",
-  "0005": "left",
-};
-
-// Places the info box beside `tile` within `stage`'s coordinate space. By
-// default it flips to the other side of the tile if it would overflow the
-// stage; pass `forceSide: true` (used for explicit INFO_BOX_SIDE entries)
-// to keep it on the requested side regardless, just clamped on-stage.
-function positionInfoBoxNextTo(box, tile, stage, side = "right", forceSide = false) {
-  const gap = 32;
-  const boxWidth = box.offsetWidth || 360;
-
-  let left;
-  if (side === "left") {
-    left = tile.offsetLeft - gap - boxWidth;
-    if (!forceSide && left < 0) left = tile.offsetLeft + tile.offsetWidth + gap;
-  } else {
-    left = tile.offsetLeft + tile.offsetWidth + gap;
-    if (!forceSide && left + boxWidth > stage.clientWidth) left = tile.offsetLeft - gap - boxWidth;
-  }
-  left = Math.max(0, Math.min(left, stage.clientWidth - boxWidth));
-
-  box.style.left = left + "px";
-  box.style.top = tile.offsetTop + "px";
-}
-
-// Set right after an actual drag/resize so the click event that follows the
-// pointerup doesn't also get treated as a "spawn the next image" click (see
-// the document click listener in initHeroGrid). A plain, un-dragged click
-// still spawns — only real movement suppresses it.
-let suppressNextSpawnClick = false;
-
-function makeDraggable(box, handle, onMove) {
-  let dragging = false;
-  let startX = 0;
-  let startY = 0;
-  let originLeft = 0;
-  let originTop = 0;
-  let moved = false;
-
-  handle.addEventListener("pointerdown", (e) => {
-    dragging = true;
-    moved = false;
-    handle.classList.add("info-box-handle--dragging");
-    handle.setPointerCapture(e.pointerId);
-    startX = e.clientX;
-    startY = e.clientY;
-    originLeft = box.offsetLeft;
-    originTop = box.offsetTop;
-  });
-
-  handle.addEventListener("pointermove", (e) => {
-    if (!dragging) return;
-    const dx = e.clientX - startX;
-    const dy = e.clientY - startY;
-    if (Math.abs(dx) > 3 || Math.abs(dy) > 3) moved = true;
-    box.style.left = originLeft + dx + "px";
-    box.style.top = originTop + dy + "px";
-  });
-
-  function endDrag(e) {
-    if (!dragging) return;
-    dragging = false;
-    handle.classList.remove("info-box-handle--dragging");
-    if (handle.hasPointerCapture(e.pointerId)) handle.releasePointerCapture(e.pointerId);
-    if (moved) {
-      suppressNextSpawnClick = true;
-      if (onMove) onMove();
-    }
-  }
-
-  handle.addEventListener("pointerup", endDrag);
-  handle.addEventListener("pointercancel", endDrag);
-}
-
-// Scales `box` by width only (height follows automatically via the media's
-// own `height: auto`), dragging from a small corner handle. Stops the
-// pointerdown from bubbling up to the box's own drag listener so grabbing
-// the corner resizes instead of moving the whole tile.
-function makeResizable(box, handle, onMove) {
-  let resizing = false;
-  let startX = 0;
-  let startWidth = 0;
-
-  handle.addEventListener("pointerdown", (e) => {
-    e.stopPropagation();
-    resizing = true;
-    handle.setPointerCapture(e.pointerId);
-    startX = e.clientX;
-    startWidth = box.offsetWidth;
-  });
-
-  handle.addEventListener("pointermove", (e) => {
-    if (!resizing) return;
-    e.stopPropagation();
-    const newWidth = Math.max(60, startWidth + (e.clientX - startX));
-    box.style.width = newWidth + "px";
-  });
-
-  function endResize(e) {
-    if (!resizing) return;
-    resizing = false;
-    if (handle.hasPointerCapture(e.pointerId)) handle.releasePointerCapture(e.pointerId);
-    suppressNextSpawnClick = true;
-    if (onMove) onMove();
-  }
-
-  handle.addEventListener("pointerup", (e) => {
-    e.stopPropagation();
-    endResize(e);
-  });
-  handle.addEventListener("pointercancel", endResize);
-}
-
 function initHeroGrid() {
   const stage = document.getElementById("hero-grid");
   if (!stage) return;
 
-  const gallery = document.getElementById("project-gallery");
   const backButton = document.getElementById("back-button");
-  const saveLayoutButton = document.getElementById("save-layout-button");
-  const infoBox = createInfoBox(() => updateStageMinHeight());
-  stage.appendChild(infoBox.el);
+  const lightbox = document.getElementById("project-lightbox");
+  const slideEl = document.getElementById("lightbox-slide");
+  const counterEl = document.getElementById("lightbox-counter");
 
   const heroProjects = FEATURED.map((code) => projects.find((p) => p.code === code)).filter(Boolean);
   const mediaLoaded = [];
-  const tiles = [];
 
-  // While project mode is open, each click on the isolated hero spawns the
-  // next image from that project's `media` array (starting position from
-  // PROJECT_MEDIA_LAYOUT / the auto grid), one at a time, so it can be
-  // dragged and resized into place before the next one appears.
-  let projectModeCode = null;
-  let mediaSpawnIndex = 0;
-  let spawnedMedia = [];
+  // Rotation for the open project: hero first, then the info slide, then
+  // every media item, looping back to the hero once the rotation completes.
+  let currentProject = null;
+  let currentSlides = [];
+  let slideIndex = 0;
 
-  // Overlay hero tiles and the info box/media tiles are all position:
-  // absolute, so they don't contribute to #hero-grid's own height. Left
-  // alone, the page collapses to almost nothing once the other (in-flow)
-  // hero tiles are hidden in project mode, which clamps scrolling and
-  // makes the freshly-opened hero land wherever the collapsed page allows
-  // rather than where it was scrolled to. Explicitly sizing the stage to
-  // fit everything currently placed in it keeps scrolling accurate.
-  function updateStageMinHeight() {
-    if (!projectModeCode) {
-      stage.style.minHeight = "";
-      return;
-    }
-    let maxBottom = 0;
-    const openTile = tiles.find((t) => t.dataset.code === projectModeCode);
-    const candidates = [openTile, !infoBox.el.hidden ? infoBox.el : null, ...spawnedMedia].filter(Boolean);
-    candidates.forEach((el) => {
-      const bottom = el.offsetTop + el.offsetHeight;
-      if (bottom > maxBottom) maxBottom = bottom;
-    });
-    const desired = maxBottom + 96;
-    // Only ever grow while a project is open. Shrinking would pull the
-    // document height out from under the current scroll position and the
-    // browser clamps it back, which reads as the page suddenly jumping —
-    // e.g. right after the hero scroll settles and the first media image
-    // (which needs far less space than the topped-up hero scroll target)
-    // spawns in and recomputes this.
-    const current = parseFloat(stage.style.minHeight) || 0;
-    stage.style.minHeight = Math.max(desired, current) + "px";
+  function buildSlides(project) {
+    const slides = [{ kind: "hero", item: project.hero }, { kind: "info" }];
+    (project.media || []).forEach((item) => slides.push({ kind: "media", item }));
+    return slides;
   }
 
-  // The browser clamps scrollTo to the document's actual scrollable range,
-  // so if the page isn't tall enough to reach targetY plus a full viewport
-  // below it, the scroll falls short. Top up the stage's height directly
-  // (only ever growing, per updateStageMinHeight's rule) rather than trying
-  // to model the exact layout needed to reach it.
-  function ensureScrollReachable(targetY) {
-    const neededDocHeight = targetY + window.innerHeight;
-    const currentDocHeight = document.documentElement.scrollHeight;
-    if (currentDocHeight < neededDocHeight) {
-      const currentMinHeight = parseFloat(stage.style.minHeight) || stage.offsetHeight;
-      stage.style.minHeight = currentMinHeight + (neededDocHeight - currentDocHeight) + "px";
-    }
+  function renderSlide() {
+    const slide = currentSlides[slideIndex];
+    slideEl.innerHTML = "";
+    slideEl.appendChild(slide.kind === "info" ? buildInfoSlide(currentProject) : createSlideMediaEl(slide.item));
+    counterEl.textContent = `${slideIndex + 1} / ${currentSlides.length}`;
   }
 
-  function clearSpawnedMedia() {
-    spawnedMedia.forEach((el) => el.remove());
-    spawnedMedia = [];
-    mediaSpawnIndex = 0;
-  }
-
-  function spawnNextMedia() {
-    const project = projects.find((p) => p.code === projectModeCode);
-    if (!project) return;
-
-    const index = mediaSpawnIndex;
-
-    // 0008's first spawn is a bigger, sound-enabled repeat of its own hero
-    // video (the hero grid version is muted/autoplaying) rather than the
-    // next `media` entry; every click after that steps through `media` as
-    // usual, just shifted by one slot.
-    const isHeroRepeat = project.code === "0008" && index === 0;
-    const mediaListIndex = project.code === "0008" ? index - 1 : index;
-    if (!isHeroRepeat && (!project.media || mediaListIndex < 0 || mediaListIndex >= project.media.length)) return;
-
-    const mediaItem = isHeroRepeat ? project.hero : project.media[mediaListIndex];
-
-    const wrap = document.createElement("div");
-    wrap.className = "project-media-tile" + (isHeroRepeat ? " project-media-tile--interactive" : "");
-    wrap.dataset.mediaIndex = index;
-
-    const mediaEl = isHeroRepeat ? createSoundVideoEl(mediaItem) : createHeroMediaEl(mediaItem);
-    mediaEl.draggable = false;
-    wrap.appendChild(mediaEl);
-    applyInversion(mediaEl, mediaItem);
-
-    const resizeHandle = document.createElement("div");
-    resizeHandle.className = "project-media-tile-resize";
-    wrap.appendChild(resizeHandle);
-
-    const pos = getMediaPosition(projectModeCode, index);
-    wrap.style.left = pos.left + "px";
-    wrap.style.top = pos.top + "px";
-    wrap.style.width = pos.width + "px";
-
-    stage.appendChild(wrap);
-    makeDraggable(wrap, wrap, () => updateStageMinHeight());
-    makeResizable(wrap, resizeHandle, () => updateStageMinHeight());
-    spawnedMedia.push(wrap);
-
-    mediaSpawnIndex += 1;
-    updateStageMinHeight();
-
-    // The media has no rendered height yet (width is set, height is auto,
-    // driven by the image's natural size once it loads) — recompute once
-    // it's known so the scrollable area accounts for its real height.
-    waitForMedia(mediaEl).then(() => updateStageMinHeight());
-  }
-
-  // Reads the current on-screen position/size of every spawned media tile
-  // and writes it to the clipboard (and console) as a PROJECT_MEDIA_LAYOUT
-  // block, ready to paste back in once you're happy with the arrangement.
-  function saveCurrentLayout() {
-    if (!projectModeCode || !spawnedMedia.length) return;
-
-    const entries = spawnedMedia
-      .map((el) => {
-        const index = el.dataset.mediaIndex;
-        const left = Math.round(el.offsetLeft);
-        const top = Math.round(el.offsetTop);
-        const width = Math.round(el.offsetWidth);
-        return `    ${index}: { left: ${left}, top: ${top}, width: ${width} },`;
-      })
-      .join("\n");
-
-    const block = `"${projectModeCode}": {\n${entries}\n  },`;
-
-    console.log(block);
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(block).catch(() => {});
-    }
-  }
-
-  // Clicking a hero image hides every other hero image, leaving just the
-  // one clicked, and opens the draggable info card beside it. Media images
-  // for the project spawn one at a time on subsequent clicks of the hero.
   function openProject(code) {
-    tiles.forEach((t) => t.classList.toggle("hero-tile--hidden", t.dataset.code !== code));
-
-    backButton.hidden = false;
-    saveLayoutButton.hidden = false;
-    const clickedTile = tiles.find((t) => t.dataset.code === code);
-
     const project = projects.find((p) => p.code === code);
-    if (project) {
-      infoBox.setContent(project);
-      infoBox.el.hidden = false;
-      if (clickedTile) {
-        const forcedSide = INFO_BOX_SIDE[code];
-        positionInfoBoxNextTo(infoBox.el, clickedTile, stage, forcedSide || "right", Boolean(forcedSide));
-      }
-    }
-
-    const isFreshOpen = projectModeCode !== code;
-    if (isFreshOpen) clearSpawnedMedia();
-    projectModeCode = code;
-    updateStageMinHeight();
-
-    // 0008 skips the extra click: the bigger, sound-enabled hero repeat
-    // spawns immediately on open rather than waiting for a second click.
-    if (isFreshOpen && code === "0008") spawnNextMedia();
-
-    // Scroll the hero just below the sticky nav (not to the raw document
-    // top — that would tuck it under the header) so it lands fully visible
-    // every time, regardless of where it sat in the index before opening.
-    if (clickedTile) {
-      const header = document.querySelector(".site-header");
-      const headerHeight = header ? header.offsetHeight : 0;
-      const targetY = Math.max(0, clickedTile.getBoundingClientRect().top + window.scrollY - headerHeight - 16);
-      ensureScrollReachable(targetY);
-      window.scrollTo({ top: targetY, behavior: "smooth" });
-    }
-  }
-
-  // Tile activation branches: the first click on a hero opens project mode;
-  // once that project is already open, clicking it again spawns the next
-  // media image instead of re-triggering the open animation.
-  function activateTile(code) {
-    if (projectModeCode === code) {
-      spawnNextMedia();
-    } else {
-      openProject(code);
-    }
+    if (!project) return;
+    currentProject = project;
+    currentSlides = buildSlides(project);
+    slideIndex = 0;
+    renderSlide();
+    lightbox.hidden = false;
+    document.body.classList.add("lightbox-open");
+    backButton.hidden = false;
   }
 
   function closeProject() {
-    tiles.forEach((t) => t.classList.remove("hero-tile--hidden"));
-    gallery.classList.remove("project-gallery--active");
-    gallery.innerHTML = "";
-    infoBox.el.hidden = true;
+    lightbox.hidden = true;
+    document.body.classList.remove("lightbox-open");
     backButton.hidden = true;
-    saveLayoutButton.hidden = true;
-    projectModeCode = null;
-    clearSpawnedMedia();
-    updateStageMinHeight();
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    slideEl.innerHTML = "";
+    currentSlides = [];
+    currentProject = null;
+  }
+
+  function advanceSlide() {
+    if (!currentSlides.length) return;
+    slideIndex = (slideIndex + 1) % currentSlides.length;
+    renderSlide();
   }
 
   backButton.addEventListener("click", closeProject);
-  saveLayoutButton.addEventListener("click", saveCurrentLayout);
 
-  // Once project mode is open, ANY click on the page spawns the next media
-  // image — including clicks on already-spawned images. Only an actual
-  // drag/resize (tracked via suppressNextSpawnClick) blocks the click that
-  // follows it; a plain click on an image still spawns. The info box and
-  // the fixed buttons/nav stay excluded outright.
-  document.addEventListener("click", (e) => {
-    if (!projectModeCode) return;
-    if (suppressNextSpawnClick) {
-      suppressNextSpawnClick = false;
-      return;
-    }
-    if (
-      e.target.closest(
-        ".info-box, #back-button, #save-layout-button, .site-header, .project-media-tile--interactive"
-      )
-    ) {
-      return;
-    }
-    spawnNextMedia();
+  // Any click on the open lightbox advances to the next slide, except on a
+  // video element — that needs its controls (play/seek/volume) clickable.
+  lightbox.addEventListener("click", (e) => {
+    if (e.target.closest("video")) return;
+    advanceSlide();
   });
+
+  // Nav index list — every project's number (not just the featured ones on
+  // the homepage grid), linking straight into its lightbox.
+  const indexList = document.getElementById("project-index-list");
+  if (indexList) {
+    projects.forEach((project) => {
+      const link = document.createElement("button");
+      link.type = "button";
+      link.className = "project-index-link";
+      link.textContent = project.code;
+      link.setAttribute("aria-label", `Open project ${project.code}`);
+      if (project.disabled) {
+        link.classList.add("project-index-link--disabled");
+        link.disabled = true;
+      } else {
+        link.addEventListener("click", () => openProject(project.code));
+      }
+      indexList.appendChild(link);
+    });
+  }
 
   heroProjects.forEach((project) => {
     const tile = document.createElement("div");
@@ -1014,19 +615,11 @@ function initHeroGrid() {
     tile.tabIndex = 0;
     tile.setAttribute("role", "button");
     tile.setAttribute("aria-label", `Open project ${project.code}`);
-    tile.addEventListener("click", (e) => {
-      // Once this project is already open, let the click bubble up to the
-      // document-level listener above (which spawns the next image).
-      // Otherwise this is the opening click — handle it here and stop it
-      // from also being treated as a spawn trigger.
-      if (projectModeCode === project.code) return;
-      e.stopPropagation();
-      openProject(project.code);
-    });
+    tile.addEventListener("click", () => openProject(project.code));
     tile.addEventListener("keydown", (e) => {
       if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();
-        activateTile(project.code);
+        openProject(project.code);
       }
     });
 
@@ -1051,8 +644,18 @@ function initHeroGrid() {
     const marquee = buildMarquee(project);
     tile.appendChild(marquee);
 
+    const codeLabel = document.createElement("div");
+    codeLabel.className = "hero-tile-code";
+    codeLabel.append(project.code);
+    if (project.date) {
+      const dateLabel = document.createElement("span");
+      dateLabel.className = "hero-tile-date";
+      dateLabel.textContent = " " + project.date;
+      codeLabel.appendChild(dateLabel);
+    }
+    tile.appendChild(codeLabel);
+
     stage.appendChild(tile);
-    tiles.push(tile);
 
     // Duration must scale with the actual rendered text width so every
     // marquee moves at the same speed instead of longer titles racing by
@@ -1158,8 +761,96 @@ function buildMarquee(project) {
   return marquee;
 }
 
+// Nav "INFO" link — toggles a translucent, blurred overlay with a bio text
+// area on top and a CV area below. Independent of the project lightbox.
+function initInfoOverlay() {
+  const link = document.getElementById("info-link");
+  const overlay = document.getElementById("info-overlay");
+  if (!link || !overlay) return;
+
+  const textEl = document.getElementById("info-overlay-text");
+  const cvEl = document.getElementById("info-overlay-cv-body");
+
+  SITE_INFO.text
+    .split(/\n+/)
+    .filter(Boolean)
+    .forEach((para) => {
+      const p = document.createElement("p");
+      p.textContent = para;
+      textEl.appendChild(p);
+    });
+  if (!textEl.children.length) {
+    const empty = document.createElement("p");
+    empty.className = "info-overlay-empty";
+    empty.textContent = "Bio coming soon.";
+    textEl.appendChild(empty);
+  }
+
+  SITE_INFO.cv.forEach((entry) => {
+    const item = document.createElement("div");
+    item.className = "info-overlay-cv-entry";
+
+    const company = document.createElement("span");
+    company.className = "info-overlay-cv-entry-company";
+    company.textContent = entry.city ? `${entry.company} (${entry.city})` : entry.company;
+    const year = document.createElement("span");
+    year.className = "info-overlay-cv-entry-year";
+    year.textContent = entry.year;
+    item.appendChild(company);
+    item.appendChild(year);
+
+    cvEl.appendChild(item);
+  });
+  if (!cvEl.children.length) {
+    const empty = document.createElement("p");
+    empty.className = "info-overlay-empty";
+    empty.textContent = "CV coming soon.";
+    cvEl.appendChild(empty);
+  }
+
+  function openInfo() {
+    overlay.hidden = false;
+    document.body.classList.add("info-open");
+  }
+
+  function closeInfo() {
+    overlay.hidden = true;
+    document.body.classList.remove("info-open");
+  }
+
+  link.addEventListener("click", (e) => {
+    e.preventDefault();
+    if (overlay.hidden) openInfo();
+    else closeInfo();
+  });
+
+  // Clicking the blurred backdrop closes it; clicking inside the panel
+  // (reading text, scrolling) does not — same click-to-dismiss zone as the
+  // panel's own `cursor: default` vs. the backdrop's `cursor: pointer`.
+  overlay.addEventListener("click", (e) => {
+    if (e.target.closest(".info-overlay-panel")) return;
+    closeInfo();
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && !overlay.hidden) closeInfo();
+  });
+}
+
+// The nav is `position: fixed` (see styles.css), so the page content needs
+// a matching top offset — measured rather than hardcoded since the nav's
+// height varies with viewport width (mobile's title uses `font-size: 3vw`).
+function syncHeaderHeight() {
+  const header = document.querySelector(".site-header");
+  if (!header) return;
+  document.documentElement.style.setProperty("--header-height", header.offsetHeight + "px");
+}
+
 // ---------------------------------------------------------------------------
 // Init
 // ---------------------------------------------------------------------------
 
 initHeroGrid();
+initInfoOverlay();
+syncHeaderHeight();
+window.addEventListener("resize", syncHeaderHeight);

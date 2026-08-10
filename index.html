@@ -11,25 +11,35 @@
       <nav class="primary-nav" aria-label="Main navigation">
         <a class="nav-button" href="index.html">WORKS</a>
         <div class="nav-right">
-          <a class="nav-button" href="index.html">INDEX</a>
-          <a class="nav-button" href="#">INFO</a>
+          <a class="nav-button" href="#" id="info-link">INFO</a>
         </div>
       </nav>
+      <nav id="project-index-list" class="project-index-list" aria-label="Project index"></nav>
     </header>
 
     <main class="page-shell">
       <section id="hero-grid" class="hero-grid" aria-label="Project index"></section>
-      <section id="project-gallery" class="project-gallery" aria-label="Project gallery"></section>
     </main>
 
+    <div id="project-lightbox" class="project-lightbox" aria-label="Project viewer" hidden>
+      <div id="lightbox-slide" class="lightbox-slide"></div>
+      <div id="lightbox-counter" class="lightbox-counter"></div>
+    </div>
+
     <button id="back-button" class="back-button" type="button" hidden>← INDEX</button>
-    <button id="save-layout-button" class="save-layout-button" type="button" hidden>SAVE LAYOUT</button>
+
+    <div id="info-overlay" class="info-overlay" aria-label="Info" hidden>
+      <div class="info-overlay-panel">
+        <div id="info-overlay-text" class="info-overlay-text"></div>
+        <div class="info-overlay-cv">
+          <div id="info-overlay-cv-body" class="info-overlay-cv-body"></div>
+        </div>
+      </div>
+    </div>
 
     <script src="script.js"></script>
   </body>
 </html>
-
-
 
 
 
