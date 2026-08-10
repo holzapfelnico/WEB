@@ -411,10 +411,10 @@ body.info-open {
     margin-left: 0 !important;
   }
   .hero-marquee {
-    padding: 0.2rem 0;
+    padding: 0.24rem 0;
   }
   .hero-marquee-track span {
-    font-size: 0.7rem;
+    font-size: 0.85rem;
   }
   .hero-tile-code {
     font-size: 0.65rem;

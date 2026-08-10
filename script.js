@@ -467,7 +467,9 @@ function buildInfoSlide(project) {
 // ---------------------------------------------------------------------------
 
 const FEATURED = ["0009", "0011", "0006", "0008", "0004", "0012", "0010", "0005"];
-const MARQUEE_SPEED = 90; // pixels per second — same for every marquee, regardless of text length
+// pixels per second — same for every marquee, regardless of text length; slower on
+// mobile since the smaller viewport makes the default speed feel too frantic
+const MARQUEE_SPEED = window.matchMedia("(max-width: 768px)").matches ? 45 : 90;
 
 // Fixed width + horizontal center (both % of page width) per project —
 // no randomness. 0009 stays first and is sized larger than the rest.
