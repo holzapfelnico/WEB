@@ -411,10 +411,10 @@ body.info-open {
     margin-left: 0 !important;
   }
   .hero-marquee-track span {
-    font-size: 1rem;
+    font-size: 0.75rem;
   }
   .hero-tile-code {
-    font-size: 0.85rem;
+    font-size: 0.65rem;
   }
 
   /* Every hero stays in its original order (no CSS `order` reshuffling) —
@@ -475,5 +475,9 @@ body.info-open {
   .back-button {
     padding: 0.5em 1em;
     font-size: 0.85rem;
+  }
+
+  .project-index-list {
+    top: 60%;
   }
 }
