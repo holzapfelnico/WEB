@@ -590,13 +590,17 @@ body.info-open {
   }
   /* The rotated caption sits to the right of the image on desktop, but that
      runs off the edge of a narrow viewport — move it to the left instead,
-     and shrink the image above just enough to leave it room to fit. */
+     and shrink the image above just enough to leave it room to fit. Capped
+     to the image's own height so a caption longer than that wraps into a
+     second (third, ...) column instead of overflowing past top/bottom. */
   .lightbox-caption {
     left: auto;
     right: 100%;
     margin-left: 0;
     margin-right: 0.2rem;
+    max-height: 100%;
     font-size: 0.7rem;
+    white-space: normal;
   }
   .lightbox-info {
     max-width: 92vw;
