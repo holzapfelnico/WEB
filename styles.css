@@ -17,6 +17,52 @@ nav, button, a, h1, p {
   font-family: inherit;
 }
 
+/* Native scrollbars are hidden everywhere in favor of the custom dot
+   indicator (.scroll-indicator below) — kept in sync with real scroll
+   position by script.js, not just a cosmetic swap. */
+html {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+html::-webkit-scrollbar {
+  display: none;
+}
+.info-overlay-panel,
+.lightbox-info {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.info-overlay-panel::-webkit-scrollbar,
+.lightbox-info::-webkit-scrollbar {
+  display: none;
+}
+
+/* Scroll indicator — a single white dot tracking scroll position along the
+   right edge, replacing the page's (now hidden) native scrollbar. Only
+   shown while the page/panel is actually scrollable. */
+.scroll-indicator {
+  position: fixed;
+  top: calc(var(--header-height, 96px) + 1rem);
+  bottom: 1rem;
+  right: 0.6rem;
+  width: 2px;
+  z-index: 300;
+  pointer-events: none;
+}
+.scroll-indicator[hidden] {
+  display: none;
+}
+.scroll-indicator-dot {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #fff;
+  transform: translateX(-50%);
+}
+
 /* Navigation --------------------------------------------------------------- */
 .site-header {
   position: fixed;
@@ -272,6 +318,28 @@ nav, button, a, h1, p {
 .lightbox-slide video {
   cursor: default;
 }
+.lightbox-media {
+  position: relative;
+  display: flex;
+  min-height: 0;
+  max-width: 100%;
+  max-height: 100%;
+}
+/* Same treatment as .hero-tile-code on the landing page — vertical,
+   rotated text tucked into the top-right corner of the image. */
+.lightbox-caption {
+  position: absolute;
+  top: 0;
+  left: 100%;
+  margin-left: 0.03rem;
+  writing-mode: vertical-rl;
+  font-weight: 1000;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  color: #ddd95f;
+  white-space: nowrap;
+  pointer-events: none;
+}
 .lightbox-counter {
   flex: none;
   font-weight: 1000;
@@ -321,29 +389,29 @@ body.info-open {
   overflow: hidden;
 }
 
-/* Info overlay — opened from the nav's INFO link; a translucent, blurred
-   backdrop (the page shows through blurred behind it) holding a text area
-   on top and a CV area below. Independent of the project lightbox, so it
-   layers above everything including the nav that opens it. -------------- */
+/* Info overlay — opened from the nav's INFO link; the page behind stays
+   fully visible (no backdrop tint/blur) since every piece of text carries
+   its own tight black background instead (.text-highlight below). Holds a
+   text area on top and a CV area below. Independent of the project
+   lightbox, so it layers above everything including the nav that opens it.
+   ---------------------------------------------------------------------- */
 .info-overlay {
   position: fixed;
   inset: 0;
   z-index: 260;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   padding: 2rem;
-  background: rgba(0, 0, 0, 0.12);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: transparent;
   cursor: pointer;
 }
 .info-overlay[hidden] {
   display: none;
 }
 .info-overlay-panel {
-  width: min(640px, 100%);
-  max-height: 82vh;
+  width: min(880px, 100%);
+  max-height: 90vh;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
@@ -354,23 +422,54 @@ body.info-open {
   text-align: left;
   cursor: default;
 }
+/* Hugs a solid black box tightly around the glyphs of whatever it wraps
+   (not the whole paragraph's box) — box-decoration-break: clone re-applies
+   that box per line, so wrapped/multi-line text stays hugged line by line
+   instead of one rectangle spanning the gaps between lines. */
+.text-highlight {
+  background: #000;
+  padding: 0.1em 0.35em;
+  border-radius: 2px;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
 .info-overlay-text p {
   margin: 0 0 1rem;
   font-weight: 1000;
+  font-size: 1.6rem;
   letter-spacing: 0.05em;
   line-height: 1.5;
 }
 .info-overlay-text p:last-child {
   margin-bottom: 0;
 }
+.info-overlay-text a {
+  color: inherit;
+  text-decoration: underline;
+}
+.info-overlay-text a:hover {
+  opacity: 0.7;
+}
 .info-overlay-cv {
   padding-top: 2rem;
 }
+.info-overlay-cv-heading {
+  margin: 0 0 0.75rem;
+  font-weight: 1000;
+  font-size: 1.4rem;
+  letter-spacing: 0.05em;
+  color: #fff;
+}
 .info-overlay-cv-entry {
   display: flex;
+  font-size: 1.2rem;
   justify-content: space-between;
   gap: 1rem;
   margin: 0 0 0.4rem;
+  padding: 0.1em 0.35em;
+  background: #000;
+  border-radius: 2px;
+  color: #fff;
   font-weight: 1000;
   letter-spacing: 0.05em;
 }
@@ -383,6 +482,34 @@ body.info-open {
 .info-overlay-empty {
   opacity: 0.5;
   font-style: italic;
+}
+.info-overlay-impressum {
+  padding-top: 2rem;
+  font-size: 0.8em;
+  color: #fff;
+}
+.info-overlay-impressum-heading {
+  margin: 1.25rem 0 0.4rem;
+  font-weight: 1000;
+  letter-spacing: 0.05em;
+}
+.info-overlay-impressum-heading:first-child {
+  margin-top: 0;
+}
+.info-overlay-impressum-body p {
+  margin: 0 0 0.75rem;
+  font-weight: 700;
+  line-height: 1.5;
+}
+.info-overlay-impressum-body p:last-child {
+  margin-bottom: 0;
+}
+.info-overlay-impressum-body a {
+  color: inherit;
+  text-decoration: underline;
+}
+.info-overlay-impressum-body a:hover {
+  opacity: 0.7;
 }
 
 /* Mobile (narrow/vertical) layout ------------------------------------------

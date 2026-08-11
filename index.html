@@ -28,11 +28,19 @@
 
     <button id="back-button" class="back-button" type="button" hidden>← INDEX</button>
 
+    <div id="scroll-indicator" class="scroll-indicator" aria-hidden="true">
+      <div class="scroll-indicator-dot"></div>
+    </div>
+
     <div id="info-overlay" class="info-overlay" aria-label="Info" hidden>
       <div class="info-overlay-panel">
         <div id="info-overlay-text" class="info-overlay-text"></div>
         <div class="info-overlay-cv">
+          <p class="info-overlay-cv-heading"><span class="text-highlight">EXPERIENCE:</span></p>
           <div id="info-overlay-cv-body" class="info-overlay-cv-body"></div>
+        </div>
+        <div class="info-overlay-impressum">
+          <div id="info-overlay-impressum-body" class="info-overlay-impressum-body"></div>
         </div>
       </div>
     </div>
