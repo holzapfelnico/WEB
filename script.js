@@ -594,11 +594,16 @@ function initHeroGrid() {
     if (!item.caption && !useFallback) return createSlideMediaEl(item);
     const wrap = document.createElement("div");
     wrap.className = "lightbox-media";
-    wrap.appendChild(createSlideMediaEl(item));
+    const mediaEl = createSlideMediaEl(item);
+    wrap.appendChild(mediaEl);
     const caption = document.createElement("span");
     caption.className = "lightbox-caption";
     caption.textContent = item.caption || "Caption";
     wrap.appendChild(caption);
+    // Caption starts hidden — revealing it only once the image/video has
+    // actually loaded avoids it popping in ahead of (and jumping around
+    // relative to) still-loading media.
+    waitForMedia(mediaEl).then(() => wrap.classList.add("is-loaded"));
     return wrap;
   }
 

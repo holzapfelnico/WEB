@@ -326,7 +326,9 @@ html::-webkit-scrollbar {
   max-height: 100%;
 }
 /* Same treatment as .hero-tile-code on the landing page — vertical,
-   rotated text tucked into the top-right corner of the image. */
+   rotated text tucked into the top-right corner of the image. Hidden until
+   script.js adds .is-loaded to the wrapper (once the image/video has
+   actually loaded), so it doesn't pop in ahead of still-loading media. */
 .lightbox-caption {
   position: absolute;
   top: 0;
@@ -338,7 +340,12 @@ html::-webkit-scrollbar {
   letter-spacing: 0.05em;
   color: #ddd95f;
   white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.15s ease-out;
   pointer-events: none;
+}
+.lightbox-media.is-loaded .lightbox-caption {
+  opacity: 1;
 }
 .lightbox-counter {
   flex: none;
@@ -598,14 +605,24 @@ body.info-open {
     right: 100%;
     margin-left: 0;
     margin-right: 0.2rem;
-    max-height: 100%;
-    font-size: 0.7rem;
+    /* `max-height: 100%` would be the obvious choice, but percentage heights
+       on an absolutely positioned element only resolve against an ancestor
+       with a *definite* height — .lightbox-media's height is auto (sized by
+       the image), so that computes to "none" and never wraps. Matching the
+       same viewport-relative cap the image itself uses (see
+       .lightbox-slide img/video above) is a concrete number instead. */
+    max-height: 62vh;
+    font-size: 0.6rem;
     white-space: normal;
   }
   .lightbox-info {
-    max-width: 92vw;
+    /* Narrower than the 92vw the image/caption get — the fixed
+       .project-index-list sits at the right edge regardless of what's open,
+       so the text needs to stop short of it instead of running underneath. */
+    max-width: 74vw;
     max-height: 62vh;
     padding: 0;
+    font-size: 0.9rem;
   }
 
   .info-overlay {
