@@ -585,8 +585,18 @@ body.info-open {
   }
   .lightbox-slide img,
   .lightbox-slide video {
-    max-width: 92vw;
+    max-width: 80vw;
     max-height: 62vh;
+  }
+  /* The rotated caption sits to the right of the image on desktop, but that
+     runs off the edge of a narrow viewport — move it to the left instead,
+     and shrink the image above just enough to leave it room to fit. */
+  .lightbox-caption {
+    left: auto;
+    right: 100%;
+    margin-left: 0;
+    margin-right: 0.2rem;
+    font-size: 0.7rem;
   }
   .lightbox-info {
     max-width: 92vw;
