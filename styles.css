@@ -16,6 +16,20 @@ body {
 nav, button, a, h1, p {
   font-family: inherit;
 }
+/* Visually hidden but still present for screen readers/crawlers — used for
+   the page's one real <h1>, which carries no visual weight of its own here
+   (the design communicates identity through the hero grid instead). */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
 
 /* Native scrollbars are hidden everywhere in favor of the custom dot
    indicator (.scroll-indicator below) — kept in sync with real scroll
