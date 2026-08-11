@@ -107,7 +107,7 @@ html::-webkit-scrollbar {
   }
 }
 .nav-button {
-  font-size: 3vw;
+  font-size: 3.4vw;
   letter-spacing: 0.08em;
   background: transparent;
   border: none;
@@ -118,7 +118,7 @@ html::-webkit-scrollbar {
 }
 @media (min-width: 1024px) {
   .nav-button {
-    font-size: 1.5rem;
+    font-size: 1.7rem;
   }
 }
 .nav-button:hover {
@@ -249,26 +249,32 @@ html::-webkit-scrollbar {
   opacity: 0.7;
 }
 
-/* Back button — fixed to the bottom of the page, only shown once a
-   project's lightbox is open ------------------------------------------------ */
+/* Back button — fixed to the bottom-right corner of the page, only shown
+   once a project's lightbox is open. Styled like the nav bar buttons
+   (transparent, no border/box) rather than as a standalone pill. --------- */
 .back-button {
   position: fixed;
-  left: 50%;
+  right: 1rem;
   bottom: 1.75rem;
-  transform: translateX(-50%);
   z-index: 150;
-  background: #fff;
-  color: #000;
+  background: transparent;
+  color: inherit;
   border: none;
-  padding: 0.6em 1.4em;
+  padding: 0;
   font-family: inherit;
   font-weight: 1000;
   font-size: 1rem;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
   cursor: pointer;
 }
+@media (min-width: 1024px) {
+  .back-button {
+    right: 4rem;
+    font-size: 1.5rem;
+  }
+}
 .back-button:hover {
-  background: #ccc;
+  color: #999;
 }
 .back-button[hidden] {
   display: none;
@@ -364,7 +370,7 @@ html::-webkit-scrollbar {
   cursor: default;
 }
 .lightbox-info-title {
-  margin: 0 0 1rem;
+  margin: 1.5em 0 1rem;
   font-size: clamp(1.25rem, 3vw, 2rem);
   font-weight: 1000;
   letter-spacing: -0.01em;
@@ -634,8 +640,7 @@ body.info-open {
   }
 
   .back-button {
-    padding: 0.5em 1em;
-    font-size: 0.85rem;
+    font-size: 0.9rem;
   }
 
   .project-index-list {

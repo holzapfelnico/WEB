@@ -79,13 +79,13 @@ const projects = [
   },
   {
     code: "0004",
-    title: "0004_STACKED // MAGAZINE STANDS",
+    title: "0004_STACKED // MAGAZINE RACK",
     year: "",
     date: "01-2024",
     location: "",
     type: "",
-    collaborators: [],
-    text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.\nDuis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+    collaborators: ["Marc-Felix Lukassek"],
+    text: "coming soon...",
     hero: { type: "image", src: "hero_img/hero_0004_ergebnis.webp", alt: "Project 0004", caption: "Joining the links" },
     media: [
       { type: "image", src: "projects/0004/0004_01_ergebnis.webp", alt: "Project 0004 image 01", caption: "Digital prototype sketch" },
