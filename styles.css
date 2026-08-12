@@ -160,6 +160,9 @@ html::-webkit-scrollbar {
     padding: 0 4rem 1.5rem;
   }
 }
+body.lightbox-open .project-index-list {
+  display: none;
+}
 .project-index-link {
   font-family: inherit;
   font-style: italic;
